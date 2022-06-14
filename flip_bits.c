@@ -41,6 +41,31 @@ void print_bits(void const * const ptr, size_t const size) {
  */
 // TODO: define get_bit function
 
+
+const char get_bit(void const * const data, size_t const byte_length, uint8_t bit_offset, uint8_t *result){
+  unsigned char *b = (unsigned char*) data;
+  int i, j;
+  uint8_t arrayLength = byte_length * sizeof(uint8_t) * BITS_IN_A_BYTE;
+
+  if(bit_offset > arrayLength){
+    int STATUS_CODE = 1;
+    return STATUS_CODE;
+  }
+  else{
+    for (i = byte_length-1; i >= 0; i--) {
+      for (j = 7; j >= 0; j--) {
+        arrayLength--;
+        if (arrayLength == bit_offset){
+          *result = (b[i] >> j & 1);;
+          int STATUS_CODE = 0;
+          return STATUS_CODE;
+        }
+      }
+    }
+  }
+}
+
+
 /**
  * @brief Sets the bit at the given offset to 1.
  * i.e. for 4-byte buffer, offset=31 is msb, offset=0 is lsb.
@@ -52,6 +77,31 @@ void print_bits(void const * const ptr, size_t const size) {
  */
 // TODO: define set_bit function
 
+
+int set_bit(uint8_t * data, size_t const byte_length, int bit_offset){
+  unsigned char *b = (unsigned char*) data;
+  int i, j;
+  int arrayLength = byte_length * sizeof(uint8_t) * BITS_IN_A_BYTE;
+
+  if(bit_offset > arrayLength){
+    int STATUS_CODE = 1;
+    return STATUS_CODE;
+  }
+  else{
+    for (i = byte_length-1; i >= 0; i--) {
+      for (j = 7; j >= 0; j--) {
+        arrayLength--;
+        if (arrayLength == bit_offset){
+            data[bit_offset/BITS_IN_A_BYTE] |= (1 << (bit_offset%BITS_IN_A_BYTE));
+        }
+      }
+    }
+    int STATUS_CODE = 0;
+    return STATUS_CODE;
+  }
+}
+
+
 /**
  * @brief Sets the bit at the given offset to 0.
  * i.e. for 4-byte buffer, offset=31 is msb, offset=0 is lsb.
@@ -62,6 +112,33 @@ void print_bits(void const * const ptr, size_t const size) {
  * @return STATUS_CODE - STATUS_SUCCESS if request okay, STATUS_ERROR if out of bounds request
  */
 // TODO: define clear_bit function
+
+
+int clear_bit(uint8_t * data, size_t const byte_length, uint8_t bit_offset){
+ unsigned char *b = (unsigned char*) data;
+  unsigned char byte;
+  int i, j;
+  uint8_t arrayLength = byte_length * sizeof(uint8_t) * BITS_IN_A_BYTE;
+
+  if(bit_offset > arrayLength){
+    int STATUS_CODE = 1;
+    return STATUS_CODE;
+  }
+  else{
+    for (i = byte_length-1; i >= 0; i--) {
+      for (j = 7; j >= 0; j--) {
+        arrayLength--;
+        byte = (b[i] >> j);
+        if (arrayLength == bit_offset){
+          data[bit_offset/BITS_IN_A_BYTE] &= ~(1 << (bit_offset%BITS_IN_A_BYTE));
+        }
+      }
+    }
+  }
+  int STATUS_CODE = 0;
+  return STATUS_CODE;
+}
+
 
 void get_bit_test() {
   uint8_t pass = 0;
